@@ -243,6 +243,126 @@ function renderBenchmarkTable(data) {
   `;
 }
 
+function renderModelComparisonChart(data) {
+  const ctx = document.getElementById("chart-model-comparison").getContext("2d");
+  const benchmark = data.model_benchmark;
+  const winning = data.winning_model;
+  const models = benchmark.map(b => b.model_display);
+  const r2 = benchmark.map(b => b.R2);
+  const mae = benchmark.map(b => b.MAE);
+  const colors = benchmark.map(b => b.model === winning ? "#0D9488" : "#94A3B8");
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: models,
+      datasets: [
+        {
+          label: "R\u00b2",
+          data: r2,
+          backgroundColor: colors,
+          borderRadius: 4,
+          yAxisID: "y",
+        },
+        {
+          label: "MAE",
+          data: mae,
+          backgroundColor: colors.map(c => c === "#0D9488" ? "rgba(13,148,136,0.4)" : "rgba(148,163,184,0.4)"),
+          borderRadius: 4,
+          yAxisID: "y1",
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "top",
+          labels: { color: "#526174", font: { size: 12 }, usePointStyle: true, pointStyle: "rectRounded" }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(4)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: "#526174", font: { size: 12 } },
+          grid: { display: false },
+        },
+        y: {
+          type: "linear",
+          position: "left",
+          title: { display: true, text: "R\u00b2", color: "#526174", font: { size: 12 } },
+          ticks: { color: "#526174", font: { size: 12 } },
+          grid: { color: "rgba(217,226,240,0.6)" },
+          min: 0.5,
+          max: 0.8,
+        },
+        y1: {
+          type: "linear",
+          position: "right",
+          title: { display: true, text: "MAE", color: "#526174", font: { size: 12 } },
+          ticks: { color: "#526174", font: { size: 12 } },
+          grid: { drawOnChartArea: false },
+          min: 0.8,
+          max: 1.3,
+        },
+      },
+    },
+  });
+}
+
+function renderTopSignalsChart(data) {
+  const ctx = document.getElementById("chart-top-signals").getContext("2d");
+  const importance = data.feature_importance;
+  const sorted = Object.entries(importance)
+    .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
+    .slice(0, 8);
+  const labels = sorted.map(([k]) => k.replace(/_/g, " "));
+  const values = sorted.map(([, v]) => Math.abs(v));
+  const colors = sorted.map(([, v]) => v < 0 ? "#DC2626" : "#0D9488");
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Absolute Coefficient Weight",
+        data: values,
+        backgroundColor: colors,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.parsed.x.toFixed(3)} absolute weight`
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: "Absolute Coefficient Weight", color: "#526174", font: { size: 12 } },
+          ticks: { color: "#526174", font: { size: 12 } },
+          grid: { color: "rgba(217,226,240,0.6)" },
+        },
+        y: {
+          ticks: { color: "#526174", font: { size: 12 } },
+          grid: { display: false },
+        },
+      },
+    },
+  });
+}
+
 function renderInsights(data) {
   const container = document.getElementById("insights-list");
   container.innerHTML = "";
@@ -324,6 +444,8 @@ async function initOverview() {
     try { renderScatterChart("chart-study-score", data.study_hours_vs_score, "Hours Studied", "Exam Score"); } catch(e) { console.error("Study-score scatter error:", e); }
     try { renderScatterChart("chart-attendance-score", data.attendance_vs_score, "Attendance (%)", "Exam Score"); } catch(e) { console.error("Attendance-score scatter error:", e); }
     try { renderImportanceChart(data); } catch(e) { console.error("Importance chart error:", e); }
+    try { renderModelComparisonChart(data); } catch(e) { console.error("Model comparison chart error:", e); }
+    try { renderTopSignalsChart(data); } catch(e) { console.error("Top signals chart error:", e); }
     try { renderBenchmarkTable(data); } catch(e) { console.error("Benchmark table error:", e); }
     try { renderInsights(data); } catch(e) { console.error("Insights error:", e); }
   } catch (err) {

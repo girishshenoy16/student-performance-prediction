@@ -31,7 +31,7 @@ It achieves **R² = 0.6888** on the held-out test set (27/27 tests passing) whil
 
 <div align="center">
 
-[![Student Performance Prediction Dashboard](docs/assets/overview.png)
+[![Student Performance Prediction Dashboard](docs/assets/overview.png)](https://girishshenoy16.github.io/student-performance-prediction)
 
 ML-powered exam score prediction with a **Power BI-inspired** 3-tab dashboard. 100% static deployment on GitHub Pages.
 </div>
@@ -56,6 +56,8 @@ This system predicts continuous exam scores from 19 student factors, enabling pr
 | Missing Values | 3 columns (Teacher_Quality: 78, Parental_Education_Level: 90, Distance_from_Home: 67) |
 | Duplicates     | 0                                                                                     |
 
+![Dataset Overview](outputs/dataset_overview.png)
+
 ## 3. Model Results
 
 | Model                 | MAE        | RMSE       | R²         |
@@ -65,6 +67,10 @@ This system predicts continuous exam scores from 19 student factors, enabling pr
 | XGBoost               | 0.9654     | 2.1874     | 0.6615     |
 
 **Winner:** Linear Regression — highest R², full JS-reproducibility, transparent coefficients.
+
+![Model Comparison](outputs/model_comparison.png)
+
+![Feature Importance](outputs/feature_importance.png)
 
 ### Top Predictive Signals
 
@@ -76,11 +82,19 @@ This system predicts continuous exam scores from 19 student factors, enabling pr
 | 4    | Hours Studied          | 1.710      |
 | 5    | Internet Access        | 0.971      |
 
+![Top Predictive Signals](outputs/top_signals.png)
+
+### Key Correlations
+
+![Study Hours vs Score](outputs/study_hours_vs_score.png)
+
+![Attendance vs Score](outputs/attendance_vs_score.png)
+
 ## 4. Dashboard
 
 | Tab                  | Features                                                                                                  |
 |----------------------|-----------------------------------------------------------------------------------------------------------|
-| **Overview**         | 4 KPI cards, score distribution, scatter plots, feature importance, benchmark table, data-driven insights |
+| **Overview**         | 4 KPI cards, score distribution, scatter plots, feature importance, model comparison, top signals, benchmark table, data-driven insights |
 | **Live Simulation**  | 19-field form, real-time prediction, repeated predictions without reset, dynamic recommendations          |
 | **Batch Prediction** | CSV drag-and-drop, column validation, 4-step workflow tracker, batch inference, CSV download              |
 
@@ -115,6 +129,10 @@ Static GitHub Pages Deployment
 | Previous Scores–Score Correlation | +0.175                                         |
 | Largest Segment                   | Average — 6,415 students (97.1%)               |
 | Strongest Model Signal            | Engagement Score (24.0% normalized importance) |
+
+![Exam Score Distribution](outputs/exam_score_distribution.png)
+
+![Performance Categories](outputs/performance_categories.png)
 
 ## 7. Testing & Quality
 
@@ -183,13 +201,25 @@ Student Performance Prediction System/
 │   ├── artifacts.json             
 │   ├── overview_data.json             
 │   ├── css/style.css                   
+│   ├── assets/
+│   │   └── overview.png
 │   └── js/
 │       ├── predictor.js                
 │       ├── app.js                      
 │       ├── overview.js                 
 │       └── csv_handler.js            
+├── outputs/
+│   ├── exam_score_distribution.png
+│   ├── performance_categories.png
+│   ├── model_comparison.png
+│   ├── feature_importance.png
+│   ├── top_signals.png
+│   ├── study_hours_vs_score.png
+│   ├── attendance_vs_score.png
+│   └── dataset_overview.png
 ├── main.py                              
-├── requirements.txt                     
+├── requirements.txt
+├── generate_plots.py
 ├── README.md
 └── PROJECT_REPORT.md
 ```

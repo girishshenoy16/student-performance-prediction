@@ -66,6 +66,8 @@ Educational institutions generate vast amounts of student data but lack actionab
 | Parental_Education_Level | 90 |
 | Distance_from_Home | 67 |
 
+![Dataset Overview](outputs/dataset_overview.png)
+
 ### Feature List
 
 **Numeric (6):** Hours_Studied, Attendance, Sleep_Hours, Previous_Scores, Tutoring_Sessions, Physical_Activity
@@ -156,6 +158,8 @@ All features are computed on scaled values (scale first, then engineer) to maint
 | Random Forest | 1.1613 | 2.2690 | 0.6358 |
 | XGBoost | 0.9654 | 2.1874 | 0.6615 |
 
+![Model Comparison](outputs/model_comparison.png)
+
 ### Winner Selection
 The winning model (Linear Regression) was selected programmatically based on highest R² score. Despite having slightly higher MAE than XGBoost (1.0165 vs 0.9654), Linear Regression achieved the best overall fit (R² = 0.6888) while maintaining full transparency and complete JavaScript reproducibility via exported coefficients and intercept.
 
@@ -173,6 +177,10 @@ The winning model (Linear Regression) was selected programmatically based on hig
 | 8 | Tutoring Sessions | 0.618 | 3.6% |
 
 *Note: These are model-derived predictive signals indicating feature contribution to the linear model, not causal explanations.*
+
+![Top Predictive Signals](outputs/top_signals.png)
+
+![Feature Importance](outputs/feature_importance.png)
 
 ---
 
@@ -217,6 +225,8 @@ A single shared JavaScript prediction engine (`docs/js/predictor.js`) serves bot
 | Study Hours vs Score | Scatter plot — 6,607 data points |
 | Attendance vs Score | Scatter plot — 6,607 data points |
 | Feature Importance | Horizontal bar chart — top 12 features by normalized importance |
+| Model Comparison | Grouped bar chart — R² and MAE for all 3 models with dual y-axes |
+| Top Predictive Signals | Horizontal bar chart — top 8 features by absolute coefficient weight |
 | Benchmark Table | Model comparison with MAE, RMSE, R², winner indicator |
 | Data-Driven Insights | 6 insight cards parsed directly from `overview_data.json` |
 
@@ -311,6 +321,14 @@ Precomputed dashboard data:
 | feature_importance | Absolute weights for 22 features |
 | normalized_importance | Percentage importance for 22 features |
 | insights | 6 data-driven insight objects |
+
+![Study Hours vs Score](outputs/study_hours_vs_score.png)
+
+![Attendance vs Score](outputs/attendance_vs_score.png)
+
+![Exam Score Distribution](outputs/exam_score_distribution.png)
+
+![Performance Categories](outputs/performance_categories.png)
 
 ---
 
