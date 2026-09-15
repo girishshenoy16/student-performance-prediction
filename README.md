@@ -31,7 +31,7 @@ It achieves **R² = 0.6888** on the held-out test set (27/27 tests passing) whil
 
 <div align="center">
 
-[![Student Performance Prediction Dashboard](docs/assets/overview.png)]
+![Student Performance Prediction Dashboard](docs/assets/overview.png)]
 
 ML-powered exam score prediction with a **Power BI-inspired** 3-tab dashboard. 100% static deployment on GitHub Pages.
 </div>
