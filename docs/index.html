@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Prediction System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="app-header" role="banner">
+        <div class="header-content">
+            <div class="header-brand">
+                <h1>Student Performance Prediction System</h1>
+                <span class="header-subtitle">ML-Powered Exam Score Analysis</span>
+            </div>
+        </div>
+        <nav class="tab-nav" role="tablist" aria-label="Main navigation">
+            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-overview" id="btn-overview" tabindex="0">
+                <span class="tab-icon">&#128202;</span> Overview
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-live" id="btn-live" tabindex="-1">
+                <span class="tab-icon">&#127919;</span> Live Simulation
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-batch" id="btn-batch" tabindex="-1">
+                <span class="tab-icon">&#128193;</span> Batch Prediction
+            </button>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- Tab 1: Overview -->
+        <section class="tab-panel active" id="tab-overview" role="tabpanel" aria-labelledby="btn-overview">
+            <div class="kpi-grid" id="kpi-grid">
+                <div class="kpi-card" tabindex="0">
+                    <div class="kpi-label">Total Students</div>
+                    <div class="kpi-value" id="kpi-total">--</div>
+                </div>
+                <div class="kpi-card" tabindex="0">
+                    <div class="kpi-label">Avg Exam Score</div>
+                    <div class="kpi-value" id="kpi-avg-score">--</div>
+                </div>
+                <div class="kpi-card" tabindex="0">
+                    <div class="kpi-label">Avg Study Hours</div>
+                    <div class="kpi-value" id="kpi-avg-hours">--</div>
+                </div>
+                <div class="kpi-card" tabindex="0">
+                    <div class="kpi-label">Avg Attendance</div>
+                    <div class="kpi-value" id="kpi-avg-attendance">--</div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card" tabindex="0">
+                    <h3 class="chart-title">Exam Score Distribution</h3>
+                    <canvas id="chart-distribution"></canvas>
+                </div>
+                <div class="chart-card" tabindex="0">
+                    <h3 class="chart-title">Performance Category Distribution</h3>
+                    <canvas id="chart-categories"></canvas>
+                </div>
+                <div class="chart-card chart-wide" tabindex="0">
+                    <h3 class="chart-title">Study Hours vs Exam Score</h3>
+                    <canvas id="chart-study-score"></canvas>
+                </div>
+                <div class="chart-card chart-wide" tabindex="0">
+                    <h3 class="chart-title">Attendance vs Exam Score</h3>
+                    <canvas id="chart-attendance-score"></canvas>
+                </div>
+                <div class="chart-card chart-wide" tabindex="0">
+                    <h3 class="chart-title">Feature Importance (Relative Model Signals)</h3>
+                    <canvas id="chart-importance"></canvas>
+                </div>
+            </div>
+
+            <div class="section-card" tabindex="0">
+                <h3 class="chart-title">Model Benchmark Comparison</h3>
+                <div class="table-wrapper">
+                    <table class="data-table" id="benchmark-table">
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>MAE</th>
+                                <th>RMSE</th>
+                                <th>R&sup2;</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="model-selection-info" id="model-selection-info"></div>
+            </div>
+
+            <div class="section-card" tabindex="0">
+                <h3 class="chart-title">Data-Driven Insights</h3>
+                <div class="insights-grid" id="insights-list"></div>
+            </div>
+        </section>
+
+        <!-- Tab 2: Live Simulation -->
+        <section class="tab-panel" id="tab-live" role="tabpanel" aria-labelledby="btn-live" hidden>
+            <div class="live-layout">
+                <div class="prediction-form-card">
+                    <div class="form-header-centered">
+                        <h2 class="section-title">Student Profile Input</h2>
+                        <p class="section-description">Enter student characteristics to estimate the expected exam score.</p>
+                    </div>
+                    <div class="scenario-section-centered">
+                        <span class="scenario-label">Try a Scenario</span>
+                        <div class="scenario-buttons-row">
+                            <button type="button" class="btn btn-scenario" data-scenario="high_performer">High Performer</button>
+                            <button type="button" class="btn btn-scenario" data-scenario="average_performer">Average Performer</button>
+                            <button type="button" class="btn btn-scenario" data-scenario="at_risk">At-Risk Student</button>
+                        </div>
+                        <div class="scenario-buttons-row">
+                            <button type="button" class="btn btn-scenario" data-scenario="strong_attendance_low_study">Strong Attendance, Low Study</button>
+                            <button type="button" class="btn btn-scenario" data-scenario="high_study_low_attendance">High Study, Low Attendance</button>
+                        </div>
+                    </div>
+                    <form id="prediction-form" novalidate>
+                        <div class="form-fields" id="form-fields"></div>
+                        <div class="form-actions-centered">
+                            <button type="submit" class="btn btn-primary" id="predict-btn">
+                                Predict Exam Score
+                            </button>
+                            <button type="reset" class="btn btn-secondary" id="reset-btn">
+                                Reset Form
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="prediction-result-card" id="result-card" hidden>
+                    <div class="result-score-block">
+                        <span class="score-label-top">PREDICTED EXAM SCORE</span>
+                        <div class="score-main">
+                            <span class="score-value" id="result-score">--</span>
+                            <span class="score-divider">/ 100</span>
+                        </div>
+                        <div class="result-category" id="result-category"></div>
+                        <p class="result-verdict" id="result-verdict"></p>
+                    </div>
+
+                    <div class="result-divider"></div>
+
+                    <div class="quick-assessment-block">
+                        <h4 class="result-subtitle">Quick Assessment</h4>
+                        <div class="assessment-list" id="assessment-list"></div>
+                    </div>
+
+                    <div class="result-divider"></div>
+
+                    <div class="performance-range-block">
+                        <h4 class="result-subtitle">Performance Range</h4>
+                        <div class="range-bar" id="performance-range">
+                            <div class="range-segment" data-category="at-risk">
+                                <span class="range-label">At Risk</span>
+                                <span class="range-threshold">&lt;60</span>
+                            </div>
+                            <div class="range-segment" data-category="average">
+                                <span class="range-label">Average</span>
+                                <span class="range-threshold">60–74</span>
+                            </div>
+                            <div class="range-segment" data-category="good">
+                                <span class="range-label">Good</span>
+                                <span class="range-threshold">75–84</span>
+                            </div>
+                            <div class="range-segment" data-category="excellent">
+                                <span class="range-label">Excellent</span>
+                                <span class="range-threshold">≥85</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-divider"></div>
+
+                    <div class="top-signals-block">
+                        <h4 class="result-subtitle">Top Model Signals for This Profile</h4>
+                        <p class="result-subtitle-desc">Model-derived signal contributions for the entered student profile</p>
+                        <div class="top-signals-chart">
+                            <canvas id="top-signals-canvas"></canvas>
+                        </div>
+                        <div class="signal-legend">
+                            <span class="signal-legend-item"><span class="signal-legend-dot signal-legend-teal"></span>Positive contribution</span>
+                            <span class="signal-legend-item"><span class="signal-legend-dot signal-legend-red"></span>Negative contribution</span>
+                        </div>
+                        <p class="signals-disclaimer">Model signals indicate predictive relationships in the training data and should not be interpreted as causal explanations.</p>
+                    </div>
+
+                    <div class="result-divider"></div>
+
+                    <div class="recommendations-block" id="recommendations-block">
+                        <h4 class="result-subtitle">Recommendations</h4>
+                        <div class="recommendations-list" id="recommendations-list"></div>
+                    </div>
+
+                    <div class="result-divider"></div>
+
+                    <div class="model-details-block">
+                        <div class="details-row">
+                            <div class="detail-chip">
+                                <span class="detail-chip-label">MODEL</span>
+                                <span class="detail-chip-value" id="detail-model">--</span>
+                            </div>
+                            <div class="detail-chip">
+                                <span class="detail-chip-label">R&sup2;</span>
+                                <span class="detail-chip-value" id="detail-r2">--</span>
+                            </div>
+                            <div class="detail-chip">
+                                <span class="detail-chip-label">TYPE</span>
+                                <span class="detail-chip-value">Regression</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="re-predict-helper" id="re-predict-helper" hidden>
+                        Want to try another scenario? Change any input and predict again.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Batch Prediction -->
+        <section class="tab-panel" id="tab-batch" role="tabpanel" aria-labelledby="btn-batch" hidden>
+            <div class="batch-layout">
+                <div class="batch-header-card">
+                    <h2 class="section-title">Batch Student Prediction</h2>
+                    <p class="section-description">Upload multiple student records, validate them, predict exam scores, and download enriched results.</p>
+                    <div class="workflow-indicator" id="workflow-indicator">
+                        <div class="workflow-step active" data-step="1">
+                            <span class="workflow-num">01</span>
+                            <span class="workflow-label">Upload</span>
+                        </div>
+                        <div class="workflow-connector"></div>
+                        <div class="workflow-step" data-step="2">
+                            <span class="workflow-num">02</span>
+                            <span class="workflow-label">Validate</span>
+                        </div>
+                        <div class="workflow-connector"></div>
+                        <div class="workflow-step" data-step="3">
+                            <span class="workflow-num">03</span>
+                            <span class="workflow-label">Predict</span>
+                        </div>
+                        <div class="workflow-connector"></div>
+                        <div class="workflow-step" data-step="4">
+                            <span class="workflow-num">04</span>
+                            <span class="workflow-label">Review Results</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="batch-scenarios-card">
+                    <div class="batch-scenario-group">
+                        <span class="batch-scenario-label">Demo Scenarios</span>
+                        <div class="batch-scenario-buttons">
+                            <button type="button" class="btn btn-batch-scenario" data-scenario="full_dataset">&#128202; Full Dataset</button>
+                            <button type="button" class="btn btn-batch-scenario" data-scenario="at_risk_cohort">&#9888;&#65039; At-Risk Cohort</button>
+                            <button type="button" class="btn btn-batch-scenario" data-scenario="high_performer_cohort">&#11088; High Performers</button>
+                            <button type="button" class="btn btn-batch-scenario" data-scenario="mixed_cohort">&#128202; Mixed Cohort</button>
+                        </div>
+                    </div>
+                    <div class="batch-scenario-divider"></div>
+                    <div class="batch-scenario-group">
+                        <span class="batch-scenario-label">Utility</span>
+                        <div class="batch-scenario-buttons">
+                            <button type="button" class="btn btn-batch-scenario btn-batch-template" data-scenario="download_template">&#128203; Download Sample Template</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="batch-upload-card" id="batch-upload-card">
+                    <div class="upload-section-header">
+                        <h3 class="chart-title">CSV Upload</h3>
+                        <button class="btn btn-secondary btn-sm" id="batch-clear-btn" hidden>Clear / Upload Another File</button>
+                    </div>
+                    <div class="drop-zone" id="drop-zone" tabindex="0" role="button" aria-label="Upload CSV file. Click or drag and drop.">
+                        <div class="drop-zone-content">
+                            <div class="drop-label">Upload a CSV file to begin batch prediction</div>
+                            <div class="drop-icon">&#128206;</div>
+                            <p class="drop-text">Drag &amp; drop your CSV here</p>
+                            <p class="drop-subtext">or <span class="drop-browse">browse files</span></p>
+                            <input type="file" id="csv-input" accept=".csv" hidden aria-label="CSV file input">
+                        </div>
+                    </div>
+                    <div class="upload-file-info" id="upload-file-info" hidden></div>
+                </div>
+
+                <div class="batch-validation-card" id="batch-validation-card" hidden>
+                    <h3 class="chart-title">Validation Status</h3>
+                    <div class="validation-grid" id="validation-grid"></div>
+                    <div class="validation-message" id="validation-message"></div>
+                    <div class="validation-details" id="validation-details"></div>
+                </div>
+
+                <div class="batch-actions-card" id="batch-actions-card" hidden>
+                    <div class="batch-action-status" id="batch-action-status"></div>
+                    <button class="btn btn-primary btn-lg" id="run-batch-btn">
+                        Run Batch Prediction
+                    </button>
+                </div>
+
+                <div class="batch-results-card" id="batch-results" hidden>
+                    <div class="batch-results-header">
+                        <h3 class="chart-title">Prediction Results</h3>
+                        <div class="batch-results-actions">
+                            <button class="btn btn-primary" id="download-csv-btn">
+                                Download Enriched Predictions CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="batch-kpi-grid" id="batch-kpi-grid"></div>
+
+                    <div class="batch-distribution" id="batch-distribution"></div>
+
+                    <div class="batch-table-section">
+                        <div class="batch-table-header">
+                            <span class="batch-table-info" id="batch-table-info"></span>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="data-table" id="batch-table">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="batch-pagination" id="batch-pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer" role="contentinfo">
+        <p>Student Performance Prediction System &mdash; ML-Powered Exam Score Analysis &mdash; Built  by Girish Shenoy</p>
+    </footer>
+
+    <script src="./js/predictor.js"></script>
+    <script src="./js/overview.js"></script>
+    <script src="./js/csv_handler.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+</html>
